@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PDFKit
 
 /// Enum para los temas de la aplicación
 enum Theme: String, CaseIterable, Identifiable {
@@ -174,9 +175,7 @@ struct CTSCalculatorView: View {
                     title: Text("Opciones de Resultado"),
                     message: Text("¿Qué deseas hacer con los cálculos?"),
                     buttons: [
-                        .default(Text("Ver en Pantalla"), action: {
-                            // Mostrar los resultados en la misma vista
-                        }),
+                        .default(Text("Ver en Pantalla")),
                         .default(Text("Exportar como PDF"), action: exportarPDF),
                         .cancel(Text("Cancelar"))
                     ]
@@ -204,13 +203,32 @@ struct CTSCalculatorView: View {
         ctsTotal = (Double(mesesComputables) * valorMensual) + (Double(diasComputables) * valorDiario)
     }
 
-    // Exportar a PDF (Lógica de exportación)
+    // Exportar a PDF
     func exportarPDF() {
-        // Aquí se debe implementar la lógica para generar un archivo PDF con los cálculos.
-        print("Exportando resultados a PDF...")
+        let content = """
+        CALCULADORA DE CTS
+        ==================
+
+        Fecha de Ingreso: \(fechaIngreso.formatted())
+        Periodo Computable: \(periodoInicial.formatted()) - \(periodoFinal.formatted())
+
+        Sueldo Bruto Mensual: S/. \(sueldoBruto)
+        Asignación Familiar: \(asignacionFamiliar ? "S/. 102.50" : "No Aplica")
+        Gratificación: S/. \(gratificacion)
+        Gratificación Ordinaria: S/. \(String(format: "%.2f", gratificacionOrdinaria))
+
+        Meses Computables: \(mesesComputables)
+        Días Computables: \(diasComputables)
+
+        Total Remuneración Computable: S/. \(String(format: "%.2f", totalRemuneracionComputable))
+        Total CTS a Depositar: S/. \(String(format: "%.2f", ctsTotal))
+        """
+
+        let pdfCreator = PDFCreator()
+        pdfCreator.createPDF(content: content, fileName: "CTS_Report.pdf")
     }
 
-    // Cálculo de días según el método de 360 días/año
+    // Cálculo de días
     func calcularDias(fechaInicio: Date, fechaFin: Date) -> Int {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month, .day], from: fechaInicio, to: fechaFin)
@@ -254,6 +272,41 @@ struct CTSCalculatorView: View {
 extension Date {
     var endOfMonth: Date {
         Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self)!
+    }
+}
+
+final class PDFCreator {
+    func createPDF(content: String, fileName: String) {
+        let pdfMetaData = [
+            kCGPDFContextCreator: "CTS Calculator",
+            kCGPDFContextAuthor: "Jhon Valladolid Castro",
+            kCGPDFContextTitle: "CTS Calculation Report"
+        ]
+        let format = UIGraphicsPDFRendererFormat()
+        format.documentInfo = pdfMetaData as [String: Any]
+
+        let pageWidth = 8.5 * 72.0
+        let pageHeight = 11 * 72.0
+        let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
+        let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
+
+        let pdfData = renderer.pdfData { context in
+            context.beginPage()
+            let textAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 12)
+            ]
+            let attributedText = NSAttributedString(string: content, attributes: textAttributes)
+            attributedText.draw(in: CGRect(x: 20, y: 20, width: pageRect.width - 40, height: pageRect.height - 40))
+        }
+
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let pdfURL = documentDirectory.appendingPathComponent(fileName)
+        do {
+            try pdfData.write(to: pdfURL)
+            print("PDF saved to \(pdfURL)")
+        } catch {
+            print("Could not save PDF file: \(error)")
+        }
     }
 }
 
