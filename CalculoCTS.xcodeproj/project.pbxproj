@@ -11,6 +11,7 @@
 		FBCDA9F72CEDB9E900C2CF46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCDA9F62CEDB9E900C2CF46 /* ContentView.swift */; };
 		FBCDA9F92CEDB9EB00C2CF46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBCDA9F82CEDB9EB00C2CF46 /* Assets.xcassets */; };
 		FBCDA9FC2CEDB9EB00C2CF46 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBCDA9FB2CEDB9EB00C2CF46 /* Preview Assets.xcassets */; };
+		FBCDAA032CEDBA2D00C2CF46 /* CTSCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCDAA022CEDBA2D00C2CF46 /* CTSCalculatorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		FBCDA9F62CEDB9E900C2CF46 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		FBCDA9F82CEDB9EB00C2CF46 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FBCDA9FB2CEDB9EB00C2CF46 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FBCDAA022CEDBA2D00C2CF46 /* CTSCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTSCalculatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			children = (
 				FBCDA9F42CEDB9E900C2CF46 /* CalculoCTSApp.swift */,
 				FBCDA9F62CEDB9E900C2CF46 /* ContentView.swift */,
+				FBCDAA022CEDBA2D00C2CF46 /* CTSCalculatorView.swift */,
 				FBCDA9F82CEDB9EB00C2CF46 /* Assets.xcassets */,
 				FBCDA9FA2CEDB9EB00C2CF46 /* Preview Content */,
 			);
@@ -138,6 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBCDA9F72CEDB9E900C2CF46 /* ContentView.swift in Sources */,
+				FBCDAA032CEDBA2D00C2CF46 /* CTSCalculatorView.swift in Sources */,
 				FBCDA9F52CEDB9E900C2CF46 /* CalculoCTSApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

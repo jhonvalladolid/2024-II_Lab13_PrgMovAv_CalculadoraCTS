@@ -11,7 +11,7 @@ import SwiftUI
 struct CalculoCTSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CTSCalculatorView()
         }
     }
 }
