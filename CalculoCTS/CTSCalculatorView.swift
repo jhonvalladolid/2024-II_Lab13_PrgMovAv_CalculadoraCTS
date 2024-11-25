@@ -29,6 +29,8 @@ struct CTSCalculatorView: View {
     @State private var ctsTotal: Double = 0.0
     @State private var mostrarSelectorTema = false
     @State private var mostrarOpciones = false
+    @State private var mostrarAlertaPDF = false
+    @State private var mensajeAlertaPDF = ""
 
     @AppStorage("selectedTheme") private var selectedTheme: Theme = .auto
 
@@ -181,6 +183,9 @@ struct CTSCalculatorView: View {
                     ]
                 )
             }
+            .alert(isPresented: $mostrarAlertaPDF) {
+                Alert(title: Text("Exportar PDF"), message: Text(mensajeAlertaPDF), dismissButton: .default(Text("OK")))
+            }
         }
     }
 
@@ -225,10 +230,16 @@ struct CTSCalculatorView: View {
         """
 
         let pdfCreator = PDFCreator()
-        pdfCreator.createPDF(content: content, fileName: "CTS_Report.pdf")
+        if let pdfURL = pdfCreator.createPDF(content: content, fileName: "CTS_Report.pdf") {
+            let activityVC = UIActivityViewController(activityItems: [pdfURL], applicationActivities: nil)
+            if let topController = UIApplication.shared.windows.first?.rootViewController {
+                topController.present(activityVC, animated: true, completion: nil)
+            }
+        } else {
+            print("Error al exportar el archivo PDF")
+        }
     }
 
-    // Cálculo de días
     func calcularDias(fechaInicio: Date, fechaFin: Date) -> Int {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month, .day], from: fechaInicio, to: fechaFin)
@@ -236,7 +247,6 @@ struct CTSCalculatorView: View {
         return max(diasTotales, 0)
     }
 
-    // Funciones de colores dinámicos
     func fondoSegunTema(_ tema: Theme) -> Color {
         switch tema {
         case .light: return Color.white
@@ -276,7 +286,7 @@ extension Date {
 }
 
 final class PDFCreator {
-    func createPDF(content: String, fileName: String) {
+    func createPDF(content: String, fileName: String) -> URL? {
         let pdfMetaData = [
             kCGPDFContextCreator: "CTS Calculator",
             kCGPDFContextAuthor: "Jhon Valladolid Castro",
@@ -303,9 +313,10 @@ final class PDFCreator {
         let pdfURL = documentDirectory.appendingPathComponent(fileName)
         do {
             try pdfData.write(to: pdfURL)
-            print("PDF saved to \(pdfURL)")
+            return pdfURL
         } catch {
-            print("Could not save PDF file: \(error)")
+            print("Error al guardar el archivo PDF: \(error)")
+            return nil
         }
     }
 }
